@@ -33,6 +33,14 @@ endif()
 # CURL
 find_package(CURL REQUIRED)
 
+# AMD is required, PaToH is optional
+find_library(AMD_LIBRARY NAMES amd PATHS "${CMAKE_SOURCE_DIR}/lib" REQUIRED)
+find_library(PATOH_LIBRARY NAMES patoh PATHS "${CMAKE_SOURCE_DIR}/lib")
+if(PATOH_LIBRARY)
+    add_definitions(-DPATOH_AVAILABLE)
+endif()
+set(SPARSEVIZ_CONFIG_FILE "" CACHE FILEPATH "Config file to read RABBIT_LICENCE from (optional)")
+
 # Directories
 include_directories(lib)
 include_directories(include)
@@ -140,7 +148,6 @@ set(COMMON_SOURCE_FILES
         src/Matrix/Orderings/GrayOrdering.cpp
         src/Matrix/Orderings/BOBAOrdering.cpp
         src/Matrix/Orderings/SlashBurnOrdering.cpp
-        src/Matrix/Orderings/PatohOrdering.cpp
         src/Matrix/Orderings/DynaDegOrdering.cpp
         src/Matrix/Orderings/MinDegOrdering.cpp
         src/Matrix/Orderings/AMDOrdering.cpp
@@ -209,13 +216,21 @@ set(FILES
         ${COMMON_SOURCE_FILES}
 )
 
-# Add Rabbit Files to All Files if Rabbit License is found
-file(READ "/home/delbek/sparseviz/deniz_matrix.config" configContent)
-string(REGEX MATCH "RABBIT_LICENCE = ([^\n]*)" _ ${configContent})
-set(rabbitLicence ${CMAKE_MATCH_1})
-string(STRIP ${rabbitLicence} rabbitLicence)
+# PaToH ordering only if the library was found
+if(PATOH_LIBRARY)
+    list(APPEND FILES src/Matrix/Orderings/PatohOrdering.cpp)
+endif()
 
-if (NOT rabbitLicence STREQUAL "None")
+# Add Rabbit Files to All Files if Rabbit License is found
+set(rabbitLicence "None")
+if(EXISTS "${SPARSEVIZ_CONFIG_FILE}")
+    file(READ "${SPARSEVIZ_CONFIG_FILE}" configContent)
+    string(REGEX MATCH "RABBIT_LICENCE[ \\t]*=[ \\t]*([^\\r\\n]*)" _ "${configContent}")
+    set(rabbitLicence "${CMAKE_MATCH_1}")
+    string(STRIP "${rabbitLicence}" rabbitLicence)
+endif()
+
+if (rabbitLicence AND NOT rabbitLicence STREQUAL "None" AND EXISTS "${CMAKE_SOURCE_DIR}/include/Matrix/Orderings/rabbit_order.hpp")
     add_definitions(-DRABBIT_AVAILABLE)
     list(APPEND FILES ${RABBIT_HEADER_FILES})
     list(APPEND FILES ${RABBIT_SOURCE_FILES})
@@ -247,8 +262,8 @@ set_target_properties(SparseViz PROPERTIES
 target_link_libraries(SparseViz PRIVATE
     CURL::libcurl
     stdc++
-    /home/delbek/sparseviz/lib/libpatoh.a
-    /home/delbek/sparseviz/lib/libamd.a
+    ${AMD_LIBRARY}
+    $<$<BOOL:${PATOH_LIBRARY}>:${PATOH_LIBRARY}>
     numa
     OpenMP::OpenMP_CXX
     $<$<BOOL:${MPI_FOUND}>:MPI::MPI_CXX>

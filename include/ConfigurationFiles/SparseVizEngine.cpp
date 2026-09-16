@@ -659,10 +659,12 @@ MatrixOrdering *SparseVizEngine::matrixOrderingFactory(SparseMatrix& matrix, std
     {
         return new SlashBurnOrdering(matrix, orderingName, orderingParameters);
     }
+#ifdef PATOH_AVAILABLE
     else if (orderingClassName == "Patoh")
     {
         return new PatohOrdering(matrix, orderingName, orderingParameters);
     }
+#endif
     else if (orderingClassName == "DynaDeg")
     {
         return new DynaDegOrdering(matrix, orderingName, orderingParameters);

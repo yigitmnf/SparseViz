@@ -16,7 +16,9 @@ int main(int argc, char* argv[])
     omp_set_nested(1);
     omp_set_dynamic(0);
 
+#ifdef PATOH_AVAILABLE
     omp_init_lock(&(PatohOrdering::patoh_lock));
+#endif
     omp_init_lock(&(COOKPartiteOrdering::kpartite_lock));
  
     omp_set_num_threads(omp_get_max_threads());
@@ -26,7 +28,9 @@ int main(int argc, char* argv[])
     SparseVizEngine* engine = reader.instantiateEngine();
     engine->runEngine();
 
+#ifdef PATOH_AVAILABLE
     omp_destroy_lock(&(PatohOrdering::patoh_lock));
+#endif
     omp_destroy_lock(&(COOKPartiteOrdering::kpartite_lock));
 
     std::unordered_map<std::string, SparseMatrix*>::iterator kpartite_matrices_iter;

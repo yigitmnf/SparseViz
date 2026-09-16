@@ -36,6 +36,10 @@
 #ifndef AMD_H
 #define AMD_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int amd_order (		    /* returns 0 if OK, negative value if error */
     int n,		    /* A is n-by-n.  n must be >= 0. */
     const int Ap [ ],	    /* column pointers for A, of size n+1 */
@@ -355,5 +359,9 @@ void amd_l_info     (double Info [ ]) ;
 #define AMD_OK 0		/* success */
 #define AMD_OUT_OF_MEMORY -1	/* malloc failed */
 #define AMD_INVALID -2		/* input arguments are not valid */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

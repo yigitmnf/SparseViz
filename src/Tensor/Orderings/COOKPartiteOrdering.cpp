@@ -8,7 +8,9 @@
 #include "BOBAOrdering.h"
 #include "DynaDegOrdering.h"
 #include "SlashBurnOrdering.h"
+#ifdef PATOH_AVAILABLE
 #include "PatohOrdering.h"
+#endif
 #include "GrayOrdering.h"
 #include "AMDOrdering.h"
 #ifdef RABBIT_AVAILABLE
@@ -79,10 +81,12 @@ void COOKPartiteOrdering::orderingFunction()
     {
         matrix_ordering = new GrayOrdering(*kpartite, "KPartite_GRAY", "");
     }
+#ifdef PATOH_AVAILABLE
     else if(m_OrderingType == "PATOH")
     {
         matrix_ordering = new PatohOrdering(*kpartite, "KPartite_PATOH", "8/CN/UNIT/CUT/END/RCM");
     }
+#endif
     else
     {
        throw std::runtime_error("Unknown ordering type " + m_OrderingType + " for KPartite!");
