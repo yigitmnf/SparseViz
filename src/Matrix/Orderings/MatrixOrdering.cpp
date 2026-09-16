@@ -177,9 +177,9 @@ void MatrixOrdering::checkPermutationCorrectness()
     }
     for (int i = 0; i != this->getMatrix().getRowCount(); ++i)
     {
-        if (!visited[rowIPermutation[i]])
+        if (!visited[i])
         {
-            throw std::logic_error("The row permutation for " + orderingName + " is not generated correctly: " + std::to_string(visited[rowIPermutation[i]]) + " appears twice at least!") ;
+            throw std::logic_error("The row permutation for " + orderingName + " is not generated correctly: " + std::to_string(i) + " is never used, so some value appears twice at least!") ;
         }
     }
 
@@ -195,9 +195,9 @@ void MatrixOrdering::checkPermutationCorrectness()
     }
     for (int i = 0; i != this->getMatrix().getColCount(); ++i)
     {
-        if (!visited[colIPermutation[i]])
+        if (!visited[i])
         {
-            throw std::logic_error("The column permutation for " + orderingName + " is not generated correctly: " + std::to_string(visited[colIPermutation[i]]) + " appears twice at least!") ;
+            throw std::logic_error("The column permutation for " + orderingName + " is not generated correctly: " + std::to_string(i) + " is never used, so some value appears twice at least!") ;
         }
     }
 }

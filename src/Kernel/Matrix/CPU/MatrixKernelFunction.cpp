@@ -68,10 +68,10 @@ void MatrixKernelFunction::determineOMPSchedule()
     }
     else if (schedulingPolicy == "dynamic")
     {
-        omp_set_schedule(omp_sched_static, chunkSize);
+        omp_set_schedule(omp_sched_dynamic, chunkSize);
     }
     else if (schedulingPolicy == "guided")
     {
-        omp_set_schedule(omp_sched_static, chunkSize);
+        omp_set_schedule(omp_sched_guided, chunkSize);
     }
 }

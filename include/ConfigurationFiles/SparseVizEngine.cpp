@@ -184,7 +184,7 @@ void SparseVizEngine::addMatrixOrdering(const std::string& orderingClassName, co
     {
 #ifndef RABBIT_AVAILABLE
         std::vector<std::string> parameters = split(orderingParameters, '/');
-        if (orderingClassName == "Patoh" && orderingParameters.size() > 5 && parameters[5] == "Rabbit")
+        if (orderingClassName == "Patoh" && parameters.size() > 5 && parameters[5] == "Rabbit")
         {
             std::cout << "SKIPPING ORDERING: " << orderingName << std::endl;
             std::cout << orderingClassName << " requires " << parameters[5] << " ordering, which is not available in your ordering set." << std::endl;
